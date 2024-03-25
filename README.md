@@ -11,12 +11,13 @@ su
 在Password:输入root密码
 <!--endsec-->
 ## 2.创建脚本。
-创建一个脚本，
+创建一个脚本，根据自己显卡能力，更改29这个数值。我是4090，所以开29个worker
 
 <!--sec data-title="OS X и Linux" data-id="OSX_Linux_whoami" data-collapse=true ces-->
 ```
 cat > /root/check_ionet.sh <<EOF 
 #!/bin/bash
+workers=29#根据自己gpu能力，更改此数值
 if pgrep -x "kuzco-runtime" > /dev/null
 then
    top -b -n 1|grep --count 'kuzco'
@@ -24,7 +25,7 @@ then
 else
     echo "kuzco-runtime is not running. Killing all kuzco processes..."
     killall kuzco
-    for i in {1..29}; do (nohup kuzco worker start > /dev/null 2>&1 & sleep 3); done
+    for ((i=0;i<workers;i++)); do (nohup kuzco worker start > /dev/null 2>&1 & sleep 3); done
 fi
 EOF
 ```
